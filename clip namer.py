@@ -1,5 +1,7 @@
 """ Made by fastattack, 2024, MIT license
 Organizes obs output directory by naming the clips and moving them in folders corresponding to the game title
+
+Version 1.0.1
 """
 
 import os
@@ -59,11 +61,22 @@ def get_window_title_from_hwnd(hwnd):
     return buff.value
 
 
+def remove_forbidden_characters(text: str) -> str:
+    """ Removes window forbidden characters for file names and spaces at the end of the text's """
+    text = text.replace("/", "").replace("\\", "").replace(":", "").replace("*", "").replace("?", "").replace("\"", "").replace("<", "").replace(">", "").replace("|", "")
+    while text.endswith(" "):
+        text = text.removesuffix(" ")
+    return text
+
+
 def replay_saved():
     """ Moves and renames a replay when it's saved to the game it has been captured in """
     hwnd = get_fullscreen_hwnd()
     if hwnd is not None:
         game = get_window_title_from_hwnd(hwnd)
+        game = remove_forbidden_characters(game)
+        if game == "":
+            game = "unknown"
     else:
         game = "unknown"
 
